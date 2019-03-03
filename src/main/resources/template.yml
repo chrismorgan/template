@@ -10,6 +10,8 @@ paths:
   /template:
     get:
       summary: Retrieve all templates
+      security:
+        - BasicAuth: []
       description: Endpoint that retrieves templates, returning a list of templates
       operationId: getAllTemplates
       responses:
@@ -23,6 +25,8 @@ paths:
                   $ref: '#/components/schemas/TemplateDescriptor'
     post:
       summary: Create a new template
+      security:
+        - BasicAuth: []
       description: Endpoint that creates templates, returning a template Id
       operationId: createTemplate
       responses:
@@ -35,6 +39,8 @@ paths:
   /template/{id}:
     get:
       summary: Retrieve a template
+      security:
+        - BasicAuth: []
       description: Endpoint that returns a template, identified by the id
       operationId: getTemplate
       parameters:
@@ -61,6 +67,8 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
     put:
       summary: Update a template
+      security:
+        - BasicAuth: []
       description: Endpoint that updates or creates a template, identified by the id
       operationId: updateTemplate
       parameters:
@@ -72,6 +80,13 @@ paths:
             type: integer
             minimum: 1
             format: int64
+      requestBody:
+        description: The template data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemplateDescriptor'
       responses:
         '200':
           description: A template descriptor response containing the template Id
@@ -79,8 +94,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TemplateDescriptor'
+        '400':
+          description: An error occurred
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Could not find that template Id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
     delete:
       summary: Delete a template
+      security:
+        - BasicAuth: []
       description: Endpoint that deletes a template, identified by the id
       operationId: deleteTemplate
       parameters:
@@ -95,7 +124,7 @@ paths:
       responses:
         '204':
           description: The template is deleted
-        '400':
+        '404':
           description: Could not find that template
           content:
             application/json:
@@ -210,4 +239,7 @@ components:
           type: string
       required:
         - message
-
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
