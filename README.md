@@ -13,4 +13,6 @@ curl --header "Content-Type: application/json" --request POST http://localhost:8
 
 curl --header "Content-Type: application/json" --request GET http://localhost:8080/template/{id}
 
+curl --header "Content-Type: application/json" --request PUT --data '{ "body": "Hello {{name}}", "channels": ["EMAIL","SMS"], "id": 1}' http://localhost:8080/template/{id}
+
 curl --header "Content-Type: application/json" --request POST --data '{"data": {"name": "Chris"}, "destination": "email@address.com"}' http://localhost:8080/send/channel/{channel}/template/{id}

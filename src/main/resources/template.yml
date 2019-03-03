@@ -203,7 +203,7 @@ components:
           description: Where to send the message
           type: string
           minLength: 3
-          maxLength: 10
+          maxLength: 50
         data:
           description: The meta data to send
           type: object
