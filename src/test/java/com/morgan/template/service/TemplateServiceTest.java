@@ -4,11 +4,11 @@ import com.morgan.template.exception.TemplateNotFoundException;
 import com.morgan.template.model.Template;
 import com.morgan.template.model.TemplateDescriptor;
 import com.morgan.template.repository.TemplateRepository;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.core.convert.ConversionService;
@@ -35,12 +35,10 @@ public class TemplateServiceTest {
     private TemplateFactory templateFactory;
     @Mock
     private ConversionService conversionService;
+
+    @InjectMocks
     private TemplateService templateService;
 
-    @Before
-    public void setUp() throws Exception {
-        templateService = new TemplateService(templateRepository, templateFactory, conversionService);
-    }
 
     @Test
     public void createTemplate_called_createsAndReturnsTemplate() {

@@ -151,14 +151,14 @@ paths:
           schema:
             type: string
             minLength: 3
-            maxLength: 10
+            maxLength: 50
       requestBody:
         description: Meta data for sending the message
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Message'
+              $ref: '#/components/schemas/MetaData'
       responses:
         '204':
           description: Message sent
@@ -197,26 +197,6 @@ components:
         - id
         - channels
         - body
-    Message:
-      properties:
-        id:
-          description: The id of the template to render
-          type: integer
-          minimum: 1
-          format: int64
-        meta:
-          description: Message related data
-          type: object
-          $ref: '#/components/schemas/MetaData'
-        channelId:
-          description: The channel to send this message
-          type: string
-          minLength: 3
-          maxLength: 10
-      required:
-        - id
-        - meta
-        - channelId
     MetaData:
       properties:
         destination:
