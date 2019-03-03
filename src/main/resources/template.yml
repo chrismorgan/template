@@ -1,0 +1,213 @@
+openapi: 3.0.0
+info:
+  title: Template Service API
+  description: Rest endpoints for managing templates and sending messages
+  version: 0.0.1
+servers:
+  - url: http://localhost
+    description: Spin up locally
+paths:
+  /template:
+    get:
+      summary: Retrieve all templates
+      description: Endpoint that retrieves templates, returning a list of templates
+      operationId: getAllTemplates
+      responses:
+        '200':
+          description: A list of template descriptors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TemplateDescriptor'
+    post:
+      summary: Create a new template
+      description: Endpoint that creates templates, returning a template Id
+      operationId: createTemplate
+      responses:
+        '201':
+          description: A template descriptor response containing the template Id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateDescriptor'
+  /template/{id}:
+    get:
+      summary: Retrieve a template
+      description: Endpoint that returns a template, identified by the id
+      operationId: getTemplate
+      parameters:
+        - name: id
+          in: path
+          description: Template Id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            format: int64
+      responses:
+        '200':
+          description: A template descriptor response containing the template Id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateDescriptor'
+        '404':
+          description: Could not find that template Id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+    put:
+      summary: Update a template
+      description: Endpoint that updates or creates a template, identified by the id
+      operationId: updateTemplate
+      parameters:
+        - name: id
+          in: path
+          description: Template Id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            format: int64
+      responses:
+        '200':
+          description: A template descriptor response containing the template Id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateDescriptor'
+    delete:
+      summary: Delete a template
+      description: Endpoint that deletes a template, identified by the id
+      operationId: deleteTemplate
+      parameters:
+        - name: id
+          in: path
+          description: Template Id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            format: int64
+      responses:
+        '204':
+          description: The template is deleted
+        '400':
+          description: Could not find that template
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  /send/channel/{channel}/template/{id}:
+    post:
+      summary: Send a message to a channel
+      description: Send a message using the given template id using the given channel
+      operationId: sendMessage
+      parameters:
+        - name: id
+          in: path
+          description: Template Id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            format: int64
+        - name: channel
+          in: path
+          description: Channel Id
+          required: true
+          schema:
+            type: string
+            minLength: 3
+            maxLength: 10
+      requestBody:
+        description: Meta data for sending the message
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+      responses:
+        '204':
+          description: Message sent
+        '400':
+          description: Cannot send this template using this channel
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Cannot find channel or template
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+components:
+  schemas:
+    TemplateDescriptor:
+      properties:
+        id:
+          description: The id of the template
+          type: integer
+          minimum: 1
+          format: int64
+        channels:
+          description: The channel Ids with which this template can be rendered
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+          minItems: 1
+        body:
+          description: The template text
+          type: string
+      required:
+        - id
+        - channels
+        - body
+    Message:
+      properties:
+        id:
+          description: The id of the template to render
+          type: integer
+          minimum: 1
+          format: int64
+        meta:
+          description: Message related data
+          type: object
+          $ref: '#/components/schemas/MetaData'
+        channelId:
+          description: The channel to send this message
+          type: string
+          minLength: 3
+          maxLength: 10
+      required:
+        - id
+        - meta
+        - channelId
+    MetaData:
+      properties:
+        destination:
+          description: Where to send the message
+          type: string
+          minLength: 3
+          maxLength: 10
+        data:
+          description: The meta data to send
+          type: object
+          additionalProperties:
+            type: string
+      required:
+        - description
+        - data
+    ErrorMessage:
+      properties:
+        message:
+          description: The error that happened
+          type: string
+      required:
+        - message
+
