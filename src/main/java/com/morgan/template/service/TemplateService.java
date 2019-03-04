@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Handles the CRUD operations for managing templates
+ */
 @Slf4j
 @Service
 public class TemplateService implements TemplateApiDelegate {
@@ -34,6 +37,11 @@ public class TemplateService implements TemplateApiDelegate {
         this.conversionService = conversionService;
     }
 
+    /**
+     * Creates blank template, assigns it an Id, stores it, and returns the template object to the endpoint
+     *
+     * @return TemplateDescriptor representing the template
+     */
     @Override
     public ResponseEntity<TemplateDescriptor> createTemplate() {
         Template template = templateRepository.addTemplate(templateFactory.createTemplate());
@@ -42,6 +50,12 @@ public class TemplateService implements TemplateApiDelegate {
         return new ResponseEntity<>(templateDescriptor, HttpStatus.CREATED);
     }
 
+    /**
+     * Deletes the template specified by the Id*
+     * @param id Template Id
+     * @throws TemplateNotFoundException if the Id does not exist in the store
+     * @return
+     */
     @Override
     public ResponseEntity<Void> deleteTemplate(@Min(1L) Long id) {
         templateRepository.deleteTemplate(id);
@@ -49,6 +63,10 @@ public class TemplateService implements TemplateApiDelegate {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    /**
+     * Returns all the templates in the store
+     * @return List of TemplateDescriptors
+     */
     @Override
     public ResponseEntity<List<TemplateDescriptor>> getAllTemplates() {
         List<Template> templates = templateRepository.getAllTemplates();
@@ -59,6 +77,11 @@ public class TemplateService implements TemplateApiDelegate {
         return new ResponseEntity<>(templateDescriptors, HttpStatus.OK);
     }
 
+    /**
+     * Retrieves a TemplateDescriptor by the template Id
+     * @param id Template Id
+     * @return TemplateDescriptor
+     */
     @Override
     public ResponseEntity<TemplateDescriptor> getTemplate(@Min(1L) Long id) {
         Optional<Template> template = templateRepository.getTemplate(id);
@@ -72,6 +95,15 @@ public class TemplateService implements TemplateApiDelegate {
         }
     }
 
+    /**
+     * Updates the template given by the template Id to the representation given by the templateDescriptor
+     * The supplied template descriptor is updated to use the parameter template Id to avoid inconsistency. In this
+     * implementation the template is only updated is it already exists in the store. It is not intended to be
+     * idempotent.
+     * @param id template Id
+     * @param templateDescriptor
+     * @return the updated TemplateDescriptor
+     */
     @Override
     public ResponseEntity<TemplateDescriptor> updateTemplate(@Min(1L) Long id, TemplateDescriptor templateDescriptor) {
         Template template = conversionService.convert(templateDescriptor, Template.class);

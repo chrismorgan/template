@@ -177,6 +177,7 @@ paths:
 components:
   schemas:
     TemplateDescriptor:
+      description: An external facing representation of the templates in the system this decouples from the internal representation
       properties:
         id:
           description: The id of the template
@@ -198,6 +199,7 @@ components:
         - channels
         - body
     MetaData:
+      description: The meta data used to send a message this contains the destination and the dictionary to bind to the template that forms the message
       properties:
         destination:
           description: Where to send the message
@@ -213,6 +215,7 @@ components:
         - description
         - data
     ErrorMessage:
+      description: Holder response for system error messages
       properties:
         message:
           description: The error that happened

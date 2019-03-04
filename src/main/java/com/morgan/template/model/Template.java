@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * Internal representation of a template
+ */
 @Data
 public class Template {
 

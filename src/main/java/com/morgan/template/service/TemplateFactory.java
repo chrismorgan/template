@@ -5,13 +5,18 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
+/**
+ * Creates Templates in a basic state
+ */
 @Service
 public class TemplateFactory {
 
-    public TemplateFactory() {
-
-    }
-
+    /**
+     * Create and return a template with empty channels list and a blank body
+     * The template Id is null
+     *
+     * @return
+     */
     public Template createTemplate() {
         Template template = new Template();
         template.setChannels(Collections.emptyList());

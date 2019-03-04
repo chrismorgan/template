@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Handles the sending of the messages from the templates as a delegate
+ */
 @Service
 public class MessageService implements SendApiDelegate {
 
@@ -29,6 +32,15 @@ public class MessageService implements SendApiDelegate {
         this.channelsHandlers = channels;
     }
 
+    /**
+     * Send a message using the template specified by id, on the channel specified by channel
+     * with destination and content specified by metaData
+     *
+     * @param id       Template Id
+     * @param channel  Channel name
+     * @param metaData Message specific metada containing the destination and the data to use in the message
+     * @return
+     */
     @Override
     public ResponseEntity<Void> sendMessage(Long id, String channel, MetaData metaData) {
         Optional<Template> template = templateRepository.getTemplate(id);
@@ -43,7 +55,8 @@ public class MessageService implements SendApiDelegate {
 
         List<Channel> validHandlers = channelsHandlers.stream()
                 .filter(handler -> handler.canSend(channel))
-                .filter(handler -> concreteTemplate.getChannels().stream().anyMatch(templateChannel -> templateChannel.equals(channel)))
+                .filter(handler -> concreteTemplate.getChannels().stream()
+                        .anyMatch(templateChannel -> templateChannel.equals(channel)))
                 .collect(Collectors.toList());
 
         String destination = metaData.getDestination();
